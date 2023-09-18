@@ -1,25 +1,31 @@
+from dataclasses import dataclass
+from typing import ClassVar
+
+
+@dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
-    def __init__(self,
-                 training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float,
-                 ) -> None:
-        self.training_type = training_type
-        self.duration = duration
-        self. distance = distance
-        self.speed = speed
-        self.calories = calories
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
+    Type_of_workout: ClassVar[str] = 'Тип тренировки:'
+    Duration_of_workout: ClassVar[str] = 'Длительность:'
+    Distance_of_workout: ClassVar[str] = 'Дистанция:'
+    Mean_speed: ClassVar[str] = 'Ср. скорость:'
+    Kilocalories_consumed: ClassVar[str] = 'Потрачено ккал:'
+    Hour: ClassVar[str] = 'ч.'
+    KM: ClassVar[str] = 'км'
+    KM_IN_Hour: ClassVar[str] = f'{KM}/{Hour[0]}'
 
     def get_message(self):
-        return (f'Тип тренировки: {self.training_type}; '
-                f'Длительность: {self.duration:.3f} ч.; '
-                f'Дистанция: {self.distance:.3f} км; '
-                f'Ср. скорость: {self.speed:.3f} км/ч; '
-                f'Потрачено ккал: {self.calories:.3f}.')
+        return (f'{self.Type_of_workout} {self.training_type}; '
+                f'{self.Duration_of_workout} {self.duration:.3f} {self.Hour}; '
+                f'{self.Distance_of_workout} {self.distance:.3f} {self.KM}; '
+                f'{self.Mean_speed} {self.speed:.3f} {self.KM_IN_Hour}; '
+                f'{self.Kilocalories_consumed} {self.calories:.3f}.')
 
 
 class Training:
