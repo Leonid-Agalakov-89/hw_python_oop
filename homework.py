@@ -48,7 +48,8 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return self.get_spent_calories()
+        raise NotImplementedError('Определите "def get_spent_calories" в %s.'
+                                  % (self.__class__.__name__))
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -76,7 +77,7 @@ class SportsWalking(Training):
 
     CALORIES_WEIGHT_MULTIPLIER: float = 0.035
     CALORIES_WEIGHT_SHIFT: float = 0.029
-    KMH_S: float = round(Training.M_IN_KM / Training.MIN_IN_H**2, 3)
+    KMH_IN_MS: float = round(Training.M_IN_KM / Training.MIN_IN_H**2, 3)
     HEIGHT_IN_M: float = 100
 
     def __init__(self,
@@ -87,25 +88,13 @@ class SportsWalking(Training):
         super().__init__(action, duration, weight)
         self.height = height
 
-    def get_mean_speed(self) -> float:
-        """Получить среднюю скорость движения."""
-        return self.get_distance() / self.duration * self.KMH_S
-
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         return ((self.CALORIES_WEIGHT_MULTIPLIER * self.weight
-                + (self.get_mean_speed()**2 / (
+                + ((self.get_mean_speed() * self.KMH_IN_MS)**2 / (
                     self.height / self.HEIGHT_IN_M)) * (
                     self.CALORIES_WEIGHT_SHIFT
                     * self.weight)) * self.duration * self.MIN_IN_H)
-
-    def show_training_info(self) -> InfoMessage:
-        """Вернуть информационное сообщение о выполненной тренировке."""
-        return InfoMessage(self.__class__.__name__,
-                           self.duration, self.get_distance(),
-                           self.get_mean_speed() / self.KMH_S,
-                           self.get_spent_calories(),
-                           )
 
 
 class Swimming(Training):
@@ -136,6 +125,7 @@ class Swimming(Training):
                 + self.CALORIES_MEAN_SPEED_MULTIPLIER
                 ) * (self.CALORIES_WEIGHT_SHIFT * self.weight
                      ) * self.duration
+
 
 def read_package(workout_type: str, data: list[int]) -> Training:
     """Прочитать данные полученные от датчиков."""
